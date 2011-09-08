@@ -16,8 +16,16 @@ describe EffectivePath do
   end 
 
   context "when the string does not contain operators for the current(.) or parent(..) directories" do
-    it "should return the string unchanged" do
-      @effective_path.path_for("c:/dir1/dir2/").should == "c:/dir1/dir2/"
+    ["c:/dir1/dir2/", "c:/dir1/dir2/file.txt", "file.txt"].each {|dir|
+      it "should return the string unchanged for '#{dir}'" do
+        @effective_path.path_for(dir).should == dir
+      end
+    } 
+  end
+
+  context "when the string contains the current(.) directory operator" do
+    it "should remove that link from the effective path" do
+      @effective_path.path_for("c:/dir1/./dir2/").should == "c:/dir1/dir2/"
     end 
   end
   
