@@ -1,7 +1,6 @@
 class EffectivePath 
 
   CURRENT_DIRECTORY_OPERATOR = '.'
-  PARENT_DIRECTORY_OPERATOR = '..'
   DIRECTORY_SEPERATOR = '/'
 
   #You don't get method over loading in ruby
@@ -12,6 +11,10 @@ class EffectivePath
   def path_for_char_array(chars)
     write_index = 0
     chars.each_with_index{|char, read_index|
+      if char == CURRENT_DIRECTORY_OPERATOR && chars[read_index -1] == CURRENT_DIRECTORY_OPERATOR
+        write_index = up_one_directory(chars, write_index)
+        next
+      end 
       if char == CURRENT_DIRECTORY_OPERATOR && chars[read_index -1] == DIRECTORY_SEPERATOR 
         next
       end 
@@ -29,6 +32,19 @@ class EffectivePath
 
     }
     chars.to_s
+  end
+
+  private 
+
+  def up_one_directory(chars, write_index)
+    brackets = 2 
+    
+    (0..write_index).reverse_each{|index|
+      brackets -= 1 if chars[index] == DIRECTORY_SEPERATOR
+      return index+1 if brackets == 0
+    }
+    # If we get here we must have gone back to the start of the string
+    0
   end
 
 end

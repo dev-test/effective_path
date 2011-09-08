@@ -28,5 +28,11 @@ describe EffectivePath do
       @effective_path.path_for("c:/dir1/./dir2/").should == "c:/dir1/dir2/"
     end 
   end
+ 
+  context "when the string contains the parent(..) directory operatator" do
+    it "should remove the previous directory from the path" do
+      @effective_path.path_for("c:/dir1/../dir2/").should == "c:/dir2/"
+    end
+  end  
   
 end
