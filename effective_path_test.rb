@@ -33,6 +33,23 @@ describe EffectivePath do
     it "should remove the previous directory from the path" do
       @effective_path.path_for("c:/dir1/../dir2/").should == "c:/dir2/"
     end
+    
+    it "should handle the removal of several parent directories" do
+      @effective_path.path_for("c:/dir1/../dir2/../dir3/").should == "c:/dir3/"
+    end
+    
+    it "should handle the removal of several consecutive parent directories" do
+      @effective_path.path_for("c:/dir1/dir2/../../dir3/").should == "c:/dir3/"
+    end 
+
+    it "should not navigate higher than the root directory" do
+      @effective_path.path_for("c:/../../dir3/").should == "c:/dir3/"
+    end
   end  
   
+  context "when the string contains both the parent(..) and current(.) directory operators" do
+    it "should render the correct result" do
+      @effective_path.path_for("c:/dir1/dir2/./dir3/../dir4/file.txt").should == "c:/dir1/dir2/dir4/file.txt"
+    end
+  end
 end

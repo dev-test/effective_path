@@ -10,9 +10,11 @@ class EffectivePath
 
   def path_for_char_array(chars)
     write_index = 0
+    first_bracket = nil 
     chars.each_with_index{|char, read_index|
+      first_bracket ||= read_index if char == DIRECTORY_SEPERATOR
       if char == CURRENT_DIRECTORY_OPERATOR && chars[read_index -1] == CURRENT_DIRECTORY_OPERATOR
-        write_index = up_one_directory(chars, write_index)
+        write_index = up_one_directory(chars, write_index, first_bracket)
         next
       end 
       if char == CURRENT_DIRECTORY_OPERATOR && chars[read_index -1] == DIRECTORY_SEPERATOR 
@@ -36,7 +38,7 @@ class EffectivePath
 
   private 
 
-  def up_one_directory(chars, write_index)
+  def up_one_directory(chars, write_index, first_bracket)
     brackets = 2 
     
     (0..write_index).reverse_each{|index|
@@ -44,7 +46,7 @@ class EffectivePath
       return index+1 if brackets == 0
     }
     # If we get here we must have gone back to the start of the string
-    0
+    first_bracket
   end
 
 end
